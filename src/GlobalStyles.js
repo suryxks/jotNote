@@ -1,7 +1,12 @@
 import {createGlobalStyle} from 'styled-components';
 
 export const GlobalStyles=createGlobalStyle`
-
+:root{
+  --cta:#5046E5;
+  --white:#ffffff;
+  --menu-hover:#ddd6fe;
+  --grey-txt:#475569;
+}
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -11,6 +16,7 @@ export const GlobalStyles=createGlobalStyle`
 */
 * {
   margin: 0;
+  padding: 0;
 }
 /*
   3. Allow percentage-based heights in the application
@@ -47,4 +53,9 @@ p, h1, h2, h3, h4, h5, h6 {
   overflow-wrap: break-word;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
 `;
