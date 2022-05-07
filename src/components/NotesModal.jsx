@@ -86,7 +86,7 @@ export const NotesdModal = ({ isModalOpen, setIsModalOpen, note, setNote }) => {
                 }}>Add Note</ButtonCta>
             </ButtonWrapper>
         </ModalContainer>
-        , document.getElementById('note-modal'))
+        , document.body)
 }
 const ModalContainer = styled.div`
     border:1px solid var(--grey-border);
