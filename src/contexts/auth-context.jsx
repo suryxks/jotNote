@@ -4,9 +4,9 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [auth, setAuth] = useState({
-        userInfo: '',
-        encodedToken: '',
-        isAuthenticated: false,
+        userInfo: JSON.parse(localStorage.getItem('user')) || '',
+        encodedToken: localStorage.getItem('encodedToken')||'',
+        isAuthenticated:localStorage.getItem('isAuthenticated')|| false,
     })
     const loginHandler = async (credentials) => {
         try {
@@ -32,13 +32,10 @@ export const AuthProvider = ({ children }) => {
         });
     }
     const signupHandler = async (credentials) => {
-        // const {data}=await axios.post('/api/auth/signup',formValues);
-        // const {createdUser,encodedToken}=data;
-        // setAuth({token:encodedToken,userInfo:createdUser});
         try {
             const response = await axios.post('/api/auth/signup', credentials);
             const { createdUser, encodedToken } = await response.data;
-            console.log(createdUser,encodedToken)
+            console.log(createdUser, encodedToken)
             setAuth({
                 encodedToken: encodedToken,
                 userInfo: createdUser,
@@ -51,9 +48,8 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         if (auth.isAuthenticated) {
             localStorage.setItem('user', JSON.stringify(auth.userInfo));
-            localStorage.setItem('encodedToken', auth.encodedToken)
-        } else {
-            localStorage.clear();
+            localStorage.setItem('encodedToken', auth.encodedToken);
+            localStorage.setItem('isAuthenticated',auth.isAuthenticated)
         }
     }, [auth])
     return <AuthContext.Provider value={{ auth, setAuth, loginHandler, logoutHandler, signupHandler }}>{children}</AuthContext.Provider>
