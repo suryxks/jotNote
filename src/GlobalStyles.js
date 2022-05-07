@@ -1,11 +1,17 @@
-import {createGlobalStyle} from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 
-export const GlobalStyles=createGlobalStyle`
-:root{
-  --cta:#5046E5;
+export const GlobalStyles = createGlobalStyle`
+:root{ 
+  --cta:#4F46E5;
   --white:#ffffff;
   --menu-hover:#ddd6fe;
   --grey-txt:#475569;
+  --grey-border:#d4d4d8;
+  --pink:#EB54BC;
+  --green:#14b8a6;
+  --blue:#3b82f6;
+  --purple:#a855f7;
+  --black:#0f172a;
 }
 
 *, *::before, *::after {
