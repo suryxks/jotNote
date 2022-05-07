@@ -63,9 +63,9 @@ const MenuListItem = styled.li`
 `
 const PageLink = styled(Link)`
 text-decoration: none;
-color:var(--grey-txt)
+color:var(--grey-txt);
 &.current-tab>li{
-    color:var(--cta)
+    color:var(--cta);
 }
 &:visited{
     color:var(--grey-txt)
