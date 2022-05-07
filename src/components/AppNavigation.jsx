@@ -63,6 +63,7 @@ const MenuListItem = styled.li`
 `
 const PageLink = styled(Link)`
 text-decoration: none;
+color:var(--grey-txt)
 &.current-tab>li{
     color:var(--cta)
 }
