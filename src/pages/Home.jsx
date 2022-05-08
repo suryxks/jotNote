@@ -25,7 +25,6 @@ export const Home = () => {
         <ButtonCta onClick={() => { setIsNotesModalOpen(true) }}><AddIcon /> <span>Add Note</span></ButtonCta>
       </PageActions>
     </NotesHeader>
-    {/* <NotesdModal isModalOpen={isNotesModalOpen} setIsModalOpen={setIsNotesModalOpen} note={currentNote} setNote={setCurrentNote} /> */}
     {notes.length === 0 ? (<EmptyNote>
       <AddNoteIcon fontSize='large' />
       <h3>No notes</h3>

@@ -37,7 +37,7 @@ export const DataProvider = ({ children }) => {
          const {data}=await axios.post(`/api/notes/${noteId}`,{note},{ headers: { authorization: encodedToken } });
          setNotes(data.notes)
         }catch(e){
-
+            console.error(e);
         }
     }
     useEffect(() => {
