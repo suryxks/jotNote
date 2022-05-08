@@ -1,13 +1,12 @@
 import styled from 'styled-components';
 import { PageContainer, ButtonCta, NotesModal } from '../components';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
-import { useEffect, useState } from 'react';
-import { NotesdModal } from '../components/NotesModal';
+import { useEffect} from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
 import { useModal } from '../contexts/ModalContext';
 import { useData } from '../contexts/DataContext';
-import { NotesContainer, NoteCard } from './NoteCard';
+import { EmptyState, NotesContainer, NoteCard, PageHeader } from '../components';
 export const Home = () => {
   const { isNotesModalOpen, setIsNotesModalOpen } = useModal();
   const { notes, currentNote, setCurrentNote } = useData();
@@ -18,14 +17,13 @@ export const Home = () => {
 
   })
   return (<PageContainer isNotesModalOpen={isNotesModalOpen}>
-    <NotesHeader >
+    <PageHeader >
       <HeadingLarge>Notes</HeadingLarge>
       <PageActions>
         <FilterButton><FilterAltOutlinedIcon /><span>Filter</span></FilterButton>
         <ButtonCta onClick={() => { setIsNotesModalOpen(true) }}><AddIcon /> <span>Add Note</span></ButtonCta>
       </PageActions>
-    </NotesHeader>
-    {/* <NotesdModal isModalOpen={isNotesModalOpen} setIsModalOpen={setIsNotesModalOpen} note={currentNote} setNote={setCurrentNote} /> */}
+    </PageHeader>
     {notes.length === 0 ? (<EmptyNote>
       <AddNoteIcon fontSize='large' />
       <h3>No notes</h3>
@@ -58,18 +56,6 @@ margin:auto;
  height: fit-content;
  padding: 2rem;
  border-radius: 8px;
-`;
-const NotesHeader = styled.div`
-display: flex;
-align-items: center;
-border-bottom: 1px solid var(--grey-border);
-max-width: 100%;
-position: sticky;
-
-@media(max-width:550px){
-  flex-direction: column;
-  align-items: flex-start;
-}
 `;
 const HeadingLarge = styled.h1`
 margin-right: auto;
