@@ -79,6 +79,7 @@ export function makeServer({ environment = "development" } = {}) {
       this.post("/archives/:noteId", updateArchiveHandler.bind(this));
 
       //  trash routes (private)
+      this.post("/notes/trash/:noteId", moveNoteToTrashHandler.bind(this));
       this.get("/trash", getAllTrashedNotesHandler.bind(this));
       this.post("/trash/restore/:noteId", restoreFromTrashHandler.bind(this));
       this.delete("/trash/delete/:noteId", deleteFromTrashHandler.bind(this));

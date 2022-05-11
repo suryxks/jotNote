@@ -1,25 +1,32 @@
 import { createContext, useState, useContext } from "react";
 import axios from 'axios';
 import { useAuth } from "./auth-context";
-import { useEffect } from "react";
+import { useEffect, useReducer } from "react";
+import { notesReducer } from "../reducers/notesReducer";
 const DataContext = createContext(null);
 
 export const DataProvider = ({ children }) => {
-
-    const [notes, setNotes] = useState([]);
+    const [notesData, notesDispatch] = useReducer(notesReducer, {
+        notes: [],
+        trashNotes: [],
+        archiveNotes: []
+    })
+    const { notes, trashNotes, archiveNotes } = notesData;
     const [currentNote, setCurrentNote] = useState({
         title: '',
         content: '',
         color: 'white',
         priority: 'low',
-        isPinned:false,
+        isPinned: false,
     });
-    const { auth } = useAuth();
-    const { encodedToken } = auth;
+    const { auth: { encodedToken } } = useAuth();
     const getNotes = async (encodedToken) => {
         try {
             const { data } = await axios.get('/api/notes', { headers: { authorization: encodedToken } });
-            setNotes(data.notes)
+            notesDispatch({
+                type: 'SET_NOTES',
+                payload: { notes: data.notes }
+            })
         } catch (e) {
             console.error(e)
         }
@@ -27,22 +34,122 @@ export const DataProvider = ({ children }) => {
     const postNote = async (encodedToken, note) => {
         try {
             const { data } = await axios.post('/api/notes', { note }, { headers: { authorization: encodedToken } });
-            setNotes(data.notes)
+            notesDispatch({
+                type: 'SET_NOTES',
+                payload: { notes: data.notes }
+            })
         } catch (e) {
             console.error(e);
         }
     }
-    const editNote=async(encodedToken,note,noteId)=>{
-        try{
-         const {data}=await axios.post(`/api/notes/${noteId}`,{note},{ headers: { authorization: encodedToken } });
-         setNotes(data.notes)
-        }catch(e){
+    const editNote = async (encodedToken, note, noteId) => {
+        try {
+            const { data } = await axios.post(`/api/notes/${noteId}`, { note }, { headers: { authorization: encodedToken } });
+            notesDispatch({
+                type: 'SET_NOTES',
+                payload: { notes: data.notes }
+            })
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    const getTrash = async (encodedToken) => {
+        try {
+            const { data } = await axios.get('/api/trash', { headers: { authorization: encodedToken } });
+            notesDispatch({
+                type: 'SET_TRASH',
+                payload: { trashNotes: data.trash }
+            })
+        } catch (e) {
+            console.error(e)
+        }
+    }
+    const deleteFromTrash = async (encodedToken, noteId) => {
+        try {
+            const { data } = await axios.delete(`/api/trash/delete/${noteId}`, { headers: { authorization: encodedToken } })
+            notesDispatch({
+                type: 'SET_TRASH',
+                payload: { trashNotes: data.trash }
+            })
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    const restoreFromTrash = async (encodedToken, note, noteId) => {
+        try {
+            const { data } = await axios.post(`/api/trash/restore/${noteId}`, { note }, { headers: { authorization: encodedToken } })
+            notesDispatch({
+                type: 'SET_NOTES_AND_TRASH',
+                payload: { trashNotes: data.trash, notes: data.notes }
+            })
+        } catch (e) {
+            console.error(e)
+        }
+    }
+    const getArchives = async (encodedToken) => {
+        try {
+            const { data } = await axios.get('/api/archives', { headers: { authorization: encodedToken } });
+            notesDispatch({
+                type: 'SET_ARCHIVE',
+                payload: { archiveNotes: data.archives }
+            })
+        } catch (e) {
+            console.error(e)
+        }
+    }
+    const archiveNote = async (encodedToken, note, noteId) => {
+        try {
+            const { data } = await axios.post(`/api/notes/archives/${noteId}`, { note }, { headers: { authorization: encodedToken } })
+            notesDispatch({
+                type: 'SET_NOTES_AND_ARCHIVE',
+                payload: { archiveNotes: data.archives, notes: data.notes }
+            })
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    const restoreFromArchive = async (encodedToken, note, noteId) => {
+        try {
+            const { data } = await axios.post(`/api/archives/restore/${noteId}`, { note }, { headers: { authorization: encodedToken } })
+            notesDispatch({
+                type: 'SET_NOTES_AND_ARCHIVE',
+                payload: { archiveNotes: data.archives, notes: data.notes }
+            })
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    const addToTrash = async (encodedToken, note, noteId) => {
+        try {
+            const { data } = await axios.post(`/api/notes/trash/${noteId}`, { note }, { headers: { authorization: encodedToken } })
+            notesDispatch({
+                type: 'SET_NOTES_AND_TRASH',
+                payload: { trashNotes: data.trash, notes: data.notes }
+            })
+        } catch (e) {
             console.error(e);
         }
     }
     useEffect(() => {
         getNotes(encodedToken);
+        getTrash(encodedToken);
+        getArchives(encodedToken)
     }, [])
-    return (<DataContext.Provider value={{ notes, currentNote, setCurrentNote, postNote,editNote }}>{children}</DataContext.Provider>)
+    return (
+        <DataContext.Provider
+            value={{
+                notes,
+                trashNotes,
+                archiveNotes,
+                currentNote,
+                setCurrentNote,
+                postNote,
+                editNote,
+                deleteFromTrash,
+                restoreFromTrash,
+                archiveNote,
+                restoreFromArchive,
+                addToTrash
+            }}>{children}</DataContext.Provider>)
 }
 export const useData = () => useContext(DataContext);

@@ -1,22 +1,30 @@
 import styled from 'styled-components';
+import { useLocation } from 'react-router-dom';
 import PushPinTwoToneIcon from '@mui/icons-material/PushPinTwoTone';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArchiveIcon from '@mui/icons-material/Archive';
+import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import { useModal } from '../contexts/ModalContext';
 import { useData } from '../contexts/DataContext';
 import { useAuth } from '../contexts/auth-context';
 
 export const NoteCard = ({ note }) => {
-    const { setCurrentNote, editNote } = useData();
+    const location = useLocation();
+    const { pathname } = location;
+    const { setCurrentNote, editNote, archiveNote, restoreFromArchive, archiveNotes, deleteFromTrash, restoreFromTrash, addToTrash } = useData();
     const { auth } = useAuth();
     const { setIsNotesModalOpen } = useModal();
     const { title, priority, content, color, isPinned } = note;
     const { encodedToken } = auth;
     return (
-        <NoteCardWrapper color={note.color} onClick={() => {
-            setCurrentNote(note);
-            setIsNotesModalOpen(true);
+        <NoteCardWrapper color={color} onClick={() => {
+            if (pathname === '/') {
+                setCurrentNote(note);
+                setIsNotesModalOpen(true);
+            }
         }}>
             <NoteCardHeader>
                 <NoteTitle>{title}</NoteTitle>
@@ -24,19 +32,41 @@ export const NoteCard = ({ note }) => {
                 {
                     isPinned ? <PushPinIcon onClick={(e) => {
                         e.stopPropagation();
-                        editNote(encodedToken, { ...note, isPinned: !note.isPinned },note._id)
+                        editNote(encodedToken, { ...note, isPinned: !note.isPinned }, note._id)
 
                     }} />
                         : <PushPinTwoToneIcon onClick={(e) => {
                             e.stopPropagation();
-                            editNote(encodedToken, { ...note, isPinned: !note.isPinned },note._id)
+                            editNote(encodedToken, { ...note, isPinned: !note.isPinned }, note._id)
                         }} />
                 }
             </NoteCardHeader>
             <NoteContent>{content}</NoteContent>
             <ActionButtonGroup>
-                <ArchiveIcon />
-                <DeleteIcon />
+                {pathname === '/trash' ? '' : archiveNotes.find(item => item._id === note._id) ?
+                    <UnarchiveIcon onClick={(e) => {
+                        e.stopPropagation();
+                        restoreFromArchive(encodedToken, note, note._id);
+                    }} /> :
+                    <ArchiveIcon onClick={(e) => {
+                        e.stopPropagation();
+                        archiveNote(encodedToken, note, note._id);
+                    }} />}
+
+                {pathname === '/trash' ? <>
+                    <RestoreFromTrashIcon onClick={(e) => {
+                        e.stopPropagation();
+                        restoreFromTrash(encodedToken, note, note._id);
+                    }} />
+                    <DeleteForeverIcon onClick={(e) => {
+                        e.stopPropagation();
+                        deleteFromTrash(encodedToken, note._id);
+                    }} />
+                </> : <DeleteIcon onClick={(e) => {
+                    e.stopPropagation();
+                    addToTrash(encodedToken, note, note._id);
+                }} />}
+
             </ActionButtonGroup>
         </NoteCardWrapper>);
 };
