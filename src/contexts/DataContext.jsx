@@ -1,13 +1,17 @@
 import { createContext, useState, useContext } from "react";
 import axios from 'axios';
 import { useAuth } from "./auth-context";
-import { useEffect } from "react";
+import { useEffect, useReducer } from "react";
+import { notesReducer } from "../reducers/notesReducer";
 const DataContext = createContext(null);
 
 export const DataProvider = ({ children }) => {
-    const [notes, setNotes] = useState([]);
-    const [trashNotes, setTrashNotes] = useState([]);
-    const [archiveNotes, setArchiveNotes] = useState([]);
+    const [notesData, notesDispatch] = useReducer(notesReducer, {
+        notes: [],
+        trashNotes: [],
+        archiveNotes: []
+    })
+    const { notes, trashNotes, archiveNotes } = notesData;
     const [currentNote, setCurrentNote] = useState({
         title: '',
         content: '',
@@ -15,12 +19,14 @@ export const DataProvider = ({ children }) => {
         priority: 'low',
         isPinned: false,
     });
-    const { auth } = useAuth();
-    const { encodedToken } = auth;
+    const { auth: { encodedToken } } = useAuth();
     const getNotes = async (encodedToken) => {
         try {
             const { data } = await axios.get('/api/notes', { headers: { authorization: encodedToken } });
-            setNotes(data.notes)
+            notesDispatch({
+                type: 'SET_NOTES',
+                payload: { notes: data.notes }
+            })
         } catch (e) {
             console.error(e)
         }
@@ -28,7 +34,10 @@ export const DataProvider = ({ children }) => {
     const postNote = async (encodedToken, note) => {
         try {
             const { data } = await axios.post('/api/notes', { note }, { headers: { authorization: encodedToken } });
-            setNotes(data.notes)
+            notesDispatch({
+                type: 'SET_NOTES',
+                payload: { notes: data.notes }
+            })
         } catch (e) {
             console.error(e);
         }
@@ -36,7 +45,10 @@ export const DataProvider = ({ children }) => {
     const editNote = async (encodedToken, note, noteId) => {
         try {
             const { data } = await axios.post(`/api/notes/${noteId}`, { note }, { headers: { authorization: encodedToken } });
-            setNotes(data.notes)
+            notesDispatch({
+                type: 'SET_NOTES',
+                payload: { notes: data.notes }
+            })
         } catch (e) {
             console.error(e);
         }
@@ -44,7 +56,10 @@ export const DataProvider = ({ children }) => {
     const getTrash = async (encodedToken) => {
         try {
             const { data } = await axios.get('/api/trash', { headers: { authorization: encodedToken } });
-            setTrashNotes(data.trash)
+            notesDispatch({
+                type: 'SET_TRASH',
+                payload: { trashNotes: data.trash }
+            })
         } catch (e) {
             console.error(e)
         }
@@ -52,7 +67,10 @@ export const DataProvider = ({ children }) => {
     const deleteFromTrash = async (encodedToken, noteId) => {
         try {
             const { data } = await axios.delete(`/api/trash/delete/${noteId}`, { headers: { authorization: encodedToken } })
-            setTrashNotes(data.trash)
+            notesDispatch({
+                type: 'SET_TRASH',
+                payload: { trashNotes: data.trash }
+            })
         } catch (e) {
             console.error(e);
         }
@@ -60,8 +78,10 @@ export const DataProvider = ({ children }) => {
     const restoreFromTrash = async (encodedToken, note, noteId) => {
         try {
             const { data } = await axios.post(`/api/trash/restore/${noteId}`, { note }, { headers: { authorization: encodedToken } })
-            setNotes(data.notes);
-            setTrashNotes(data.trash);
+            notesDispatch({
+                type: 'SET_NOTES_AND_TRASH',
+                payload: { trashNotes: data.trash, notes: data.notes }
+            })
         } catch (e) {
             console.error(e)
         }
@@ -69,7 +89,10 @@ export const DataProvider = ({ children }) => {
     const getArchives = async (encodedToken) => {
         try {
             const { data } = await axios.get('/api/archives', { headers: { authorization: encodedToken } });
-            setArchiveNotes(data.archives)
+            notesDispatch({
+                type: 'SET_ARCHIVE',
+                payload: { archiveNotes: data.archives }
+            })
         } catch (e) {
             console.error(e)
         }
@@ -77,8 +100,10 @@ export const DataProvider = ({ children }) => {
     const archiveNote = async (encodedToken, note, noteId) => {
         try {
             const { data } = await axios.post(`/api/notes/archives/${noteId}`, { note }, { headers: { authorization: encodedToken } })
-            setArchiveNotes(data.archives);
-            setNotes(data.notes)
+            notesDispatch({
+                type: 'SET_NOTES_AND_ARCHIVE',
+                payload: { archiveNotes: data.archives, notes: data.notes }
+            })
         } catch (e) {
             console.error(e);
         }
@@ -86,8 +111,10 @@ export const DataProvider = ({ children }) => {
     const restoreFromArchive = async (encodedToken, note, noteId) => {
         try {
             const { data } = await axios.post(`/api/archives/restore/${noteId}`, { note }, { headers: { authorization: encodedToken } })
-            setArchiveNotes(data.archives);
-            setNotes(data.notes)
+            notesDispatch({
+                type: 'SET_NOTES_AND_ARCHIVE',
+                payload: { archiveNotes: data.archives, notes: data.notes }
+            })
         } catch (e) {
             console.error(e);
         }
@@ -95,8 +122,10 @@ export const DataProvider = ({ children }) => {
     const addToTrash = async (encodedToken, note, noteId) => {
         try {
             const { data } = await axios.post(`/api/notes/trash/${noteId}`, { note }, { headers: { authorization: encodedToken } })
-            setNotes(data.notes);
-            setTrashNotes(data.trash);
+            notesDispatch({
+                type: 'SET_NOTES_AND_TRASH',
+                payload: { trashNotes: data.trash, notes: data.notes }
+            })
         } catch (e) {
             console.error(e);
         }
