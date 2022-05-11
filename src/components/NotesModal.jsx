@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { createPortal } from 'react-dom';
 import { useRef, useState } from 'react';
 import { useOnClickOutside } from '../hooks/useOnClickOutside';
-import { ButtonCta } from './ButtonCta';
+import { ButtonCta } from './utilities/ButtonCta';
 import { useData } from '../contexts/DataContext';
 import { useAuth } from '../contexts/auth-context';
 import CloseIcon from '@mui/icons-material/Close';

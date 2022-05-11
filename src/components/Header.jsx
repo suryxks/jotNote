@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Link,useNavigate } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
-import { ButtonCta } from './ButtonCta';
+import { ButtonCta } from './utilities/ButtonCta';
 import { useAuth } from '../contexts/auth-context';
 export const Header = () => {
     const {auth,logoutHandler}=useAuth();

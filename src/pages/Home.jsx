@@ -7,6 +7,7 @@ import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
 import { useModal } from '../contexts/ModalContext';
 import { useData } from '../contexts/DataContext';
 import { EmptyState, NotesContainer, NoteCard, PageHeader } from '../components';
+import { HeadingLarge } from '../components/utilities/HeadingLarge';
 export const Home = () => {
   const { isNotesModalOpen, setIsNotesModalOpen } = useModal();
   const { notes, currentNote, setCurrentNote } = useData();
@@ -56,9 +57,6 @@ margin:auto;
  height: fit-content;
  padding: 2rem;
  border-radius: 8px;
-`;
-const HeadingLarge = styled.h1`
-margin-right: auto;
 `;
 const FilterButton = styled.button`
   border:1px solid var(--grey-border);
