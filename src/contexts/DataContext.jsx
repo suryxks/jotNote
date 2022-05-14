@@ -1,8 +1,10 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, useEffect, useReducer } from "react";
 import axios from 'axios';
 import { useAuth } from "./auth-context";
-import { useEffect, useReducer } from "react";
 import { notesReducer } from "../reducers/notesReducer";
+import { v4 as uuid } from "uuid";
+import { initialFilterState, filtersReducer } from '../reducers/filtersReducer';
+import { filterByPriority, sortNotes } from '../utils';
 const DataContext = createContext(null);
 
 export const DataProvider = ({ children }) => {
@@ -12,12 +14,15 @@ export const DataProvider = ({ children }) => {
         archiveNotes: []
     })
     const { notes, trashNotes, archiveNotes } = notesData;
+    const [filterState, filterDispatch] = useReducer(filtersReducer, initialFilterState)
     const [currentNote, setCurrentNote] = useState({
+        id: uuid(),
         title: '',
         content: '',
         color: 'white',
-        priority: 'low',
+        priority: 'Low',
         isPinned: false,
+        date: new Date(),
     });
     const { auth: { encodedToken } } = useAuth();
     const getNotes = async (encodedToken) => {
@@ -130,6 +135,8 @@ export const DataProvider = ({ children }) => {
             console.error(e);
         }
     }
+    const sortedNotes = sortNotes(notes, filterState);
+    const filterdNotes = filterByPriority(sortedNotes, filterState);
     useEffect(() => {
         getNotes(encodedToken);
         getTrash(encodedToken);
@@ -149,7 +156,10 @@ export const DataProvider = ({ children }) => {
                 restoreFromTrash,
                 archiveNote,
                 restoreFromArchive,
-                addToTrash
+                addToTrash,
+                filterState,
+                filterDispatch,
+                filterdNotes
             }}>{children}</DataContext.Provider>)
 }
 export const useData = () => useContext(DataContext);
