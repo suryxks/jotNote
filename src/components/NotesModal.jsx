@@ -26,7 +26,6 @@ export const NotesdModal = ({ isModalOpen, setIsModalOpen, note, setNote }) => {
         isPinned: false,
         date: new Date(),
     };
-    // useOnClickOutside(modalref, () => setIsModalOpen(false));
     if (!isModalOpen) return null;
     return createPortal(
         <ModalContainer>

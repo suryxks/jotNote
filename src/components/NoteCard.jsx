@@ -125,7 +125,6 @@ margin-right: 5px;
 const NoteCardHeader = styled.div`
   display: flex;
   align-items: center;
-  /* justify-content: space-around; */
   margin-bottom: 1rem;
 `;
 export const NotesContainer = styled.div`

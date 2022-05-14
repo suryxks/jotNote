@@ -7,7 +7,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useTags } from "../contexts/TagsContext";
 import { useData } from "../contexts/DataContext";
 import { useModal } from '../contexts/ModalContext';
-import { useOnClickOutside } from '../hooks/useOnClickOutside';
 
 export const TagsModal = ({ isTagsModalOpen, setIsTagsModalOpen }) => {
     const { setIsNotesModalOpen } = useModal();
@@ -15,8 +14,6 @@ export const TagsModal = ({ isTagsModalOpen, setIsTagsModalOpen }) => {
     const { tags, tagsDispatch } = useTags();
     const { currentNote } = useData();
     const tagsModalRef = useRef();
-    // useOnClickOutside(tagsModalRef, () => setIsTagsModalOpen(false))
-
     if (!isTagsModalOpen) return null
     return createPortal(
         <TagsModalContainer >
