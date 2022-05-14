@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
-import { Home, Archive, Trash, Labels, Login, SignUp } from '../pages/index';
+import { Home, Archive, Trash, Labels, Login, SignUp, PageNotFound } from '../pages/index';
 import { TagContent } from './TagContent';
 export const AppRoutes = () => {
     return (
@@ -12,6 +12,7 @@ export const AppRoutes = () => {
             <Route path='/labels' element={<Labels />} />
             <Route path='/login' element={<Login />} />
             <Route path='/signup' element={<SignUp />} />
+            <Route path='*' element={<PageNotFound />} />
         </RoutesWrapper>
     );
 }
