@@ -10,15 +10,35 @@ import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import { useModal } from '../contexts/ModalContext';
 import { useData } from '../contexts/DataContext';
 import { useAuth } from '../contexts/auth-context';
-
+import { useTags } from '../contexts/TagsContext';
+const TagChip = ({ TagName }) => {
+    return <Tag>{TagName}</Tag>
+}
+const Tag = styled.div`
+background-color: black;
+color: var(--white);
+font-weight: bold;
+font-size: 0.8rem;
+padding: 4px 8px;
+border-radius: 10px;
+`;
 export const NoteCard = ({ note }) => {
     const location = useLocation();
     const { pathname } = location;
     const { setCurrentNote, editNote, archiveNote, restoreFromArchive, archiveNotes, deleteFromTrash, restoreFromTrash, addToTrash } = useData();
     const { auth } = useAuth();
     const { setIsNotesModalOpen } = useModal();
+    const { tags } = useTags();
     const { title, priority, content, color, isPinned } = note;
     const { encodedToken } = auth;
+    const currentTags = tags.reduce((acc, currentTag) => {
+        const isNotePresentInTag = currentTag.notes.find(item => item.id === note.id)
+        if (isNotePresentInTag) {
+            return [...acc, currentTag.name]
+        }
+        return acc;
+    }, [])
+    console.log(currentTags);
     return (
         <NoteCardWrapper color={color} onClick={() => {
             if (pathname === '/') {
@@ -42,6 +62,9 @@ export const NoteCard = ({ note }) => {
                 }
             </NoteCardHeader>
             <NoteContent>{content}</NoteContent>
+            <TagsContainer>
+                {currentTags.map(tag => <TagChip TagName={tag} />)}
+            </TagsContainer>
             <ActionButtonGroup>
                 {pathname === '/trash' ? '' : archiveNotes.find(item => item._id === note._id) ?
                     <UnarchiveIcon onClick={(e) => {
@@ -70,6 +93,15 @@ export const NoteCard = ({ note }) => {
             </ActionButtonGroup>
         </NoteCardWrapper>);
 };
+const TagsContainer = styled.div`
+ display: flex;
+ overflow: auto;
+ white-space: nowrap;
+ text-overflow: ellipsis;
+ gap:4px;
+ position: absolute;
+ bottom: 40px;
+`
 const ActionButtonGroup = styled.div`
 position:absolute;
 bottom: 0;
