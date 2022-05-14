@@ -7,13 +7,8 @@ import { TagTab } from './TagTab';
 export const TagContent = () => {
     let { labelId } = useParams();
     const { tags } = useTags();
-    console.log(labelId)
-    console.log(tags);
     const tagData = tags.find(tag => tag._id === labelId);
-    console.log(tagData);
     const { notes } = tagData;
-
-    console.log(notes)
     return (
         <PageContainer>
             <TabsContainer>
@@ -36,5 +31,4 @@ export const TagContent = () => {
 const TabsContainer = styled.div`
     display: flex;
     overflow: auto;
-    /* white-space: nowrap; */
 `
