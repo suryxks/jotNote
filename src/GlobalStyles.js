@@ -58,7 +58,16 @@ input, button, textarea, select {
 p, h1, h2, h3, h4, h5, h6 {
   overflow-wrap: break-word;
 }
-
+::-webkit-scrollbar {
+  width: 5px;
+  color: var(--grey-border);
+  }
+::-webkit-scrollbar-thumb {
+  background-color: var(--grey-txt);
+  border-radius: 1000px;
+    background-color: var(--cta);
+    border: 2px solid var(--cta);
+}
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;

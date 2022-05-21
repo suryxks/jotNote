@@ -1,28 +1,34 @@
 import styled from 'styled-components';
 import { createPortal } from 'react-dom';
 import { useRef, useState } from 'react';
+import { v4 as uuid } from 'uuid';
 import { useOnClickOutside } from '../hooks/useOnClickOutside';
 import { ButtonCta } from './utilities/ButtonCta';
 import { useData } from '../contexts/DataContext';
 import { useAuth } from '../contexts/auth-context';
+import { useTags } from '../contexts/TagsContext';
 import CloseIcon from '@mui/icons-material/Close';
+import { useModal } from '../contexts/ModalContext';
 export const NotesdModal = ({ isModalOpen, setIsModalOpen, note, setNote }) => {
     const { title, content, color, priority } = note;
+    const { setIsTagsModalOpen } = useModal();
     const modalref = useRef();
     const { postNote, editNote } = useData();
     const { auth } = useAuth();
     const { encodedToken } = auth;
+    const { tags, tagsDispatch } = useTags();
     const emptyNote = {
+        id: uuid(),
         title: '',
         content: '',
         color: 'white',
-        priority: 'low',
+        priority: 'Low',
         isPinned: false,
+        date: new Date(),
     };
-    useOnClickOutside(modalref, () => setIsModalOpen(false));
     if (!isModalOpen) return null;
     return createPortal(
-        <ModalContainer ref={modalref}>
+        <ModalContainer>
             <ModalHeader>Create Note</ModalHeader>
             <CloseModalButton onClick={() => { setIsModalOpen(false) }}><CloseIcon /></CloseModalButton>
             <NoteInputContainer>
@@ -64,15 +70,9 @@ export const NotesdModal = ({ isModalOpen, setIsModalOpen, note, setNote }) => {
                         <option value='purple' selected={color === 'purple'}>Purple</option>
                     </Select>
                 </SelectWrapper>
-                <SelectWrapper>
-                    <label htmlFor='tags'>Tag:</label>
-                    <Select name='color' id='color'>
-                        <option>--default</option>
-                    </Select>
-                </SelectWrapper>
             </NoteProperties>
             <ButtonWrapper>
-                <AddLabelButton>Add Label</AddLabelButton>
+                <AddLabelButton onClick={() => setIsTagsModalOpen(true)}>Add Label</AddLabelButton>
                 <ButtonCta onClick={() => {
                     if (note._id) {
                         editNote(encodedToken, note, note._id);
@@ -85,7 +85,7 @@ export const NotesdModal = ({ isModalOpen, setIsModalOpen, note, setNote }) => {
                     }
                 }}>Add Note</ButtonCta>
             </ButtonWrapper>
-        </ModalContainer>
+        </ModalContainer >
         , document.body)
 }
 const ModalContainer = styled.div`
@@ -101,12 +101,10 @@ const ModalContainer = styled.div`
     height: 450px;
     padding:0.5rem;
     border-radius: 8px;
-    /* background-color: rgba(0, 0, 0, 0.3); */
     @media (max-width: 550px){
         width: 100%;
         height: 100%;
         top:10rem;
-        /* max-width: 100%; */
     }
 `
 const CloseModalButton = styled.button`
@@ -117,7 +115,6 @@ top:0;
 right: 0;
 margin:1rem;
 font-weight: bolder;
-/* padding:2px 5px; */
 cursor: pointer;
 `
 const ModalHeader = styled.h2`
@@ -154,9 +151,12 @@ const SelectWrapper = styled.div`
     align-items: center;
 `
 const Select = styled.select`
-    padding: 2px;
-    border-radius: 4px;
-    margin:5px;
+   padding:5px;
+   border-radius: 4px;
+   background-color: var(--grey-border);
+   border: 1px solid var(--grey-border);
+   color:var(--grey-txt);
+   margin:5px;
 `
 const NoteProperties = styled.div`
     display: flex;

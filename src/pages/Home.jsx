@@ -1,18 +1,17 @@
 import styled from 'styled-components';
 import { PageContainer, ButtonCta, NotesModal } from '../components';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
-import { useEffect} from 'react';
+import { useEffect, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
 import { useModal } from '../contexts/ModalContext';
 import { useData } from '../contexts/DataContext';
-import { EmptyState, NotesContainer, NoteCard, PageHeader } from '../components';
+import { EmptyState, NotesContainer, NoteCard, PageHeader, FiltersModal } from '../components';
 import { HeadingLarge } from '../components/utilities/HeadingLarge';
 export const Home = () => {
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
   const { isNotesModalOpen, setIsNotesModalOpen } = useModal();
-  const { notes, currentNote, setCurrentNote } = useData();
-  const pinnedNotes = notes.filter((note) => note.isPinned === true);
-  const unPinnedNotes = notes.filter((note) => note.isPinned === false);
+  const { notes, filterdNotes } = useData();
   useEffect(() => {
     window.scrollTo(0, 0);
 
@@ -21,23 +20,25 @@ export const Home = () => {
     <PageHeader >
       <HeadingLarge>Notes</HeadingLarge>
       <PageActions>
-        <FilterButton><FilterAltOutlinedIcon /><span>Filter</span></FilterButton>
+        <FilterButton onClick={() => setIsFilterOpen(prev => !prev)}><FilterAltOutlinedIcon /><span>Filter</span></FilterButton>
         <ButtonCta onClick={() => { setIsNotesModalOpen(true) }}><AddIcon /> <span>Add Note</span></ButtonCta>
       </PageActions>
     </PageHeader>
-    {notes.length === 0 ? (<EmptyNote>
+    {filterdNotes.length === 0 ? (<EmptyNote>
       <AddNoteIcon fontSize='large' />
       <h3>No notes</h3>
       <p>Create  new Note</p>
       <ButtonCta onClick={() => { setIsNotesModalOpen(true) }}><AddIcon /><span>Add Note</span></ButtonCta>
     </EmptyNote>) : (
       <NotesContainer>
-        {notes.map((note) => (<NoteCard note={note} />))}
+        {filterdNotes.map((note) => (<NoteCard note={note} />))}
       </NotesContainer>
     )
     }
+    <FiltersModal isFilterOpen={isFilterOpen} setIsFilterOpen={setIsFilterOpen} />
   </PageContainer>)
 }
+
 const AddNoteIcon = styled(NoteAddOutlinedIcon)`
   color: var(--grey-txt);
   `;
