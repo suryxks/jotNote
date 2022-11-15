@@ -11,7 +11,7 @@ export const Trash = () => {
                 <h3>No notes Here</h3>
             </EmptyState>) : (
                 <NotesContainer>
-                    {trashNotes.map((note) => (<NoteCard note={note} />))}
+                    {trashNotes.map((note) => (<NoteCard note={note} key={note._id} />))}
                 </NotesContainer>
             )
             }

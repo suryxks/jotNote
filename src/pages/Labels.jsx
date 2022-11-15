@@ -18,7 +18,7 @@ export const Labels = () => {
         <PageContainer>
             {tags.length > 0 ? (<TabsContainer>
                 {tags.map(tag => {
-                    return (<TagTab tabName={tag.name} tagId={tag._id} isCurrent={false} />)
+                    return (<TagTab tabName={tag.name} tagId={tag._id} isCurrent={false} key={tag._id} />)
                 })}
             </TabsContainer>) : (<EmptyState><h1>No Tags Added</h1></EmptyState>)}
 

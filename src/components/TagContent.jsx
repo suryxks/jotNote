@@ -14,13 +14,12 @@ export const TagContent = () => {
             <TabsContainer>
                 {tags.map(tag => {
                     const isCurrent = labelId === tag._id;
-                    console.log(tag.name, isCurrent);
-                    return (<TagTab tabName={tag.name} tagId={tag._id} isCurrent={isCurrent} />)
+                    return (<TagTab tabName={tag.name} tagId={tag._id} isCurrent={isCurrent} key={tag._id} />)
                 })}
             </TabsContainer>
             {
                 <NotesContainer>
-                    {notes.map((note) => (<NoteCard note={note} />))}
+                    {notes.map((note) => (<NoteCard note={note} key={ note._id} />))}
                 </NotesContainer>
             }
         </PageContainer>
