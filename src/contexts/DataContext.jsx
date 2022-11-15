@@ -126,7 +126,9 @@ export const DataProvider = ({ children }) => {
     }
     const addToTrash = async (encodedToken, note, noteId) => {
         try {
+            console.log(note)
             const { data } = await axios.post(`/api/notes/trash/${noteId}`, { note }, { headers: { authorization: encodedToken } })
+            console.log(data)
             notesDispatch({
                 type: 'SET_NOTES_AND_TRASH',
                 payload: { trashNotes: data.trash, notes: data.notes }

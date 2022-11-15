@@ -4,6 +4,7 @@ import { Header, AppNavigation, NotesdModal, TagsModal } from './components';
 import { AppRoutes } from './components/AppRoutes.jsx';
 import { useData } from './contexts/DataContext';
 import { useModal } from './contexts/ModalContext';
+import { Toaster } from 'react-hot-toast';
 function App() {
   const { isNotesModalOpen, setIsNotesModalOpen,isTagsModalOpen,setIsTagsModalOpen } = useModal();
   const { currentNote, setCurrentNote } = useData();
@@ -15,6 +16,7 @@ function App() {
       <NotesdModal isModalOpen={isNotesModalOpen} setIsModalOpen={setIsNotesModalOpen} note={currentNote} setNote={setCurrentNote} />
       <TagsModal  isTagsModalOpen={isTagsModalOpen} setIsTagsModalOpen={setIsTagsModalOpen} note={currentNote}/>
       <GlobalStyles />
+      <Toaster/>
     </AppWrapper>
   );
 }

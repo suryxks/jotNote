@@ -11,7 +11,7 @@ export const Archive = () => {
                 <h3>No notes Here</h3>
             </EmptyState>) : (
                 <NotesContainer>
-                    {archiveNotes.map((note) => (<NoteCard note={note} />))}
+                    {archiveNotes.map((note) => (<NoteCard note={note} key={note._id} />))}
                 </NotesContainer>
             )
             }

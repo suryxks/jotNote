@@ -34,11 +34,10 @@ export const NoteCard = ({ note }) => {
     const currentTags = tags.reduce((acc, currentTag) => {
         const isNotePresentInTag = currentTag.notes.find(item => item.id === note.id)
         if (isNotePresentInTag) {
-            return [...acc, currentTag.name]
+            return [...acc, {name:currentTag.name,_id:currentTag._id}]
         }
         return acc;
     }, [])
-    console.log(currentTags);
     return (
         <NoteCardWrapper color={color} onClick={() => {
             if (pathname === '/') {
@@ -63,7 +62,7 @@ export const NoteCard = ({ note }) => {
             </NoteCardHeader>
             <NoteContent>{content}</NoteContent>
             <TagsContainer>
-                {currentTags.map(tag => <TagChip TagName={tag} />)}
+                {currentTags.map(tag => <TagChip TagName={tag.name} key={tag._id}/>)}
             </TagsContainer>
             <ActionButtonGroup>
                 {pathname === '/trash' ? '' : archiveNotes.find(item => item._id === note._id) ?
@@ -87,6 +86,7 @@ export const NoteCard = ({ note }) => {
                     }} />
                 </> : <DeleteIcon onClick={(e) => {
                     e.stopPropagation();
+                    console.log(note)
                     addToTrash(encodedToken, note, note._id);
                 }} />}
 

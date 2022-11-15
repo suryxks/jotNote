@@ -35,7 +35,7 @@ export const TagsModal = ({ isTagsModalOpen, setIsTagsModalOpen }) => {
             {tags.map(tag => {
                 const isNotePresent=tag.notes.find(note => note.id === currentNote.id)
                 return (
-                    <CheckBoxContainer>
+                    <CheckBoxContainer key={tag._id}>
                         <input
                             type="checkbox"
                             id={tag.name}
